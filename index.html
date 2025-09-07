@@ -83,7 +83,7 @@
         <!-- Mobile Menu -->
         <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-screen bg-[#111827] flex flex-col items-center justify-center space-y-8 text-xl">
             <button id="mobile-menu-close-button" class="absolute top-8 right-8 text-slate-300 hover:text-cyan-400">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </button>
             <a href="#about" class="mobile-link text-slate-300">About</a>
             <a href="#experience" class="mobile-link text-slate-300">Experience</a>
@@ -346,11 +346,16 @@
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileLinks = document.querySelectorAll('.mobile-link');
+        const mobileMenuCloseButton = document.getElementById('mobile-menu-close-button');
         
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
         
+        mobileMenuCloseButton.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.add('hidden');
@@ -480,4 +485,5 @@
     </script>
 </body>
 </html>
+
 
