@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubham Katore | Health Informatics & Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* New, modern dark slate background */
+            color: #8892b0;
+            overflow-x: hidden;
+        }
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .highlight {
+            color: #64ffda;
+        }
+        .glass-card {
+            background: rgba(31, 41, 55, 0.3); /* Updated glass effect for new bg */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -15px rgba(2, 12, 27, 0.7);
+        }
+        .cta-link:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .tab-btn.active { color: #64ffda; border-bottom-color: #64ffda; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="leading-relaxed pt-28">
+
+    <!-- Header / Nav -->
+     <header id="navbar" class="fixed top-0 left-0 right-0 z-50 md:top-6 md:left-1/2 md:-translate-x-1/2 md:w-auto">
+        <div class="container mx-auto px-4 py-3 md:px-0">
+             <div class="flex items-center justify-between bg-[#111827]/80 backdrop-blur-sm md:rounded-full shadow-lg p-4 md:py-2 md:px-6">
+                <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-xl font-bold highlight font-mono hover:bg-slate-700 transition-colors">
+                    <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </a>
+                <nav class="hidden md:flex items-center space-x-6 text-slate-300 px-6">
+                    <a href="#about" class="hover:text-cyan-400 transition-colors duration-300 text-sm">About</a>
+                    <a href="#experience" class="hover:text-cyan-400 transition-colors duration-300 text-sm">Experience</a>
+                    <a href="#projects" class="hover:text-cyan-400 transition-colors duration-300 text-sm">Projects</a>
+                    <a href="#skills" class="hover:text-cyan-400 transition-colors duration-300 text-sm">Skills</a>
+                    <a href="#contact" class="hover:text-cyan-400 transition-colors duration-300 text-sm">Contact</a>
+                </nav>
+                <button id="mobile-menu-button" class="md:hidden text-cyan-400 z-50">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-screen bg-[#111827] flex flex-col items-center justify-center space-y-8 text-xl">
+            <a href="#about" class="mobile-link text-slate-300">About</a>
+            <a href="#experience" class="mobile-link text-slate-300">Experience</a>
+            <a href="#projects" class="mobile-link text-slate-300">Projects</a>
+            <a href="#skills" class="mobile-link text-slate-300">Skills</a>
+             <a href="#contact" class="mobile-link highlight border border-current px-6 py-2 rounded-full">Contact</a>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 md:px-8">
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen flex items-center justify-center text-center md:text-left -mx-6 md:-mx-8">
+             <canvas id="hero-canvas"></canvas>
+            <div class="hero-content max-w-3xl px-6 md:px-8">
+                <p class="font-mono mb-4 text-cyan-400">Hi, my name is</p>
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-slate-100 mb-4">Shubham Katore.</h1>
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-400 mb-8">I build solutions at the intersection of health and technology.</h2>
+                <p class="max-w-xl mx-auto md:mx-0 text-slate-400">
+                    I'm a passionate healthcare technologist with a background in Medical Imaging, currently pursuing an MSc in Health Informatics. I specialize in applying data analytics and machine learning to solve real-world problems in clinical diagnostics and healthcare operations.
+                </p>
+                <div class="mt-12 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-6">
+                     <a href="mailto:shubhamkatore712@gmail.com" class="cta-link border border-current text-cyan-400 font-mono py-3 px-6 rounded hover:bg-current/10 transition-colors duration-300">
+                        Get In Touch
+                    </a>
+                    <div class="flex items-center gap-4 text-slate-400">
+                        <a href="https://github.com/shubham12-bit896" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors" aria-label="GitHub">
+                            <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><title>GitHub</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/shubham-katore-a80936279" target="_blank" rel="noopener noreferrer" class="hover:text-cyan-400 transition-colors" aria-label="LinkedIn">
+                           <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><title>LinkedIn</title><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="py-24 lg:py-32 reveal">
+            <h2 class="text-3xl font-bold mb-8 flex items-center text-slate-200">
+                <span class="highlight mr-4 text-2xl">01.</span> About Me
+                <span class="h-px bg-slate-600 flex-grow ml-6"></span>
+            </h2>
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="w-full md:w-2/3">
+                    <div class="flex border-b border-slate-600 mb-6">
+                        <button class="tab-btn py-2 px-4 font-mono text-sm border-b-2 border-transparent active" data-tab="about-me">About</button>
+                        <button class="tab-btn py-2 px-4 font-mono text-sm border-b-2 border-transparent" data-tab="philosophy">My Philosophy</button>
+                    </div>
+                    <div id="about-me" class="tab-content active space-y-4">
+                        <p>Hello! I'm Shubham, a technologist driven by a passion for improving healthcare through innovation. My journey began in medical imaging, where I gained hands-on experience with technologies like CT, MRI, and X-ray, and saw firsthand the critical role data plays in patient outcomes.</p>
+                        <p>This experience led me to pursue a Master's in Health Informatics & Analytics, where I'm deepening my skills in Python, SQL, and machine learning. I'm fascinated by the potential of AI to revolutionize diagnostics, from analyzing medical images with Vision Transformers to streamlining hospital workflows with predictive analytics.</p>
+                        <p>I thrive on bridging the gap between clinical needs and technical solutions. Whether it's developing a patient-facing portal or designing an efficient radiology department, my goal is always to create tools that are not only powerful but also intuitive and impactful for both patients and providers.</p>
+                    </div>
+                    <div id="philosophy" class="tab-content space-y-4">
+                        <p>I believe that technology should serve humanity, and nowhere is this more critical than in healthcare. My philosophy is rooted in a patient-centric approach: every line of code I write, every system I design, is ultimately aimed at improving an individual's health journey and outcomes.</p>
+                        <p>I am a strong advocate for data democratization—making complex medical information accessible and understandable to patients. By empowering patients with their own data, we can foster a more collaborative and effective healthcare ecosystem. I am committed to building secure, ethical, and transparent AI systems that augment the capabilities of clinicians, reduce diagnostic errors, and lead to more personalized care.</p>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 mx-auto">
+                    <div class="relative group w-64 h-64 mx-auto">
+                        <div class="absolute inset-0 border-2 border-cyan-400 rounded-lg transform rotate-6 group-hover:rotate-3 transition-transform duration-300"></div>
+                        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Healthcare technology" class="relative w-full h-full object-cover rounded-lg shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-24 lg:py-32 reveal">
+            <h2 class="text-3xl font-bold mb-12 flex items-center text-slate-200">
+                <span class="highlight mr-4 text-2xl">02.</span> Where I've Worked
+                <span class="h-px bg-slate-600 flex-grow ml-6"></span>
+            </h2>
+            <div class="max-w-3xl">
+                <div class="relative border-l-2 border-slate-700 ml-4 pl-8 py-4">
+                    <div class="absolute -left-[11px] top-5 w-5 h-5 bg-cyan-400 rounded-full border-4 border-gray-900"></div>
+                    <h3 class="text-xl font-bold text-slate-100">Radiology Trainee</h3>
+                    <p class="text-md font-medium text-slate-300 mb-2">Saint George hospital | CSMT</p>
+                    <p class="text-sm font-mono text-slate-400 mb-4">November 2022 - April 2023</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Assisted in CT, MRI, and X-ray procedures, ensuring adherence to safety protocols.</li>
+                        <li>Managed DICOM images using PACS and supported RIS/EMR workflows.</li>
+                        <li>Implemented a quality control system that enhanced diagnostic accuracy by 15% and reduced equipment downtime by 20%.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+         <!-- Projects Section -->
+        <section id="projects" class="py-24 lg:py-32 reveal">
+            <h2 class="text-3xl font-bold mb-12 flex items-center text-slate-200">
+                <span class="highlight mr-4 text-2xl">03.</span> Things I've Built
+                <span class="h-px bg-slate-600 flex-grow ml-6"></span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Project Card 1 -->
+                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('#', '_blank')">
+                    <div class="relative overflow-hidden">
+                        <img src="https://placehold.co/600x360/111827/64ffda?text=Pulmonology+EMR" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" alt="Pulmonology EMR Screenshot">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div>
+                            <p class="highlight font-mono text-sm">Featured Project</p>
+                            <h3 class="text-xl font-bold text-slate-100 mt-2 mb-3 group-hover:text-cyan-400 transition-colors">
+                                Pulmonology Department EMR
+                            </h3>
+                            <p class="text-sm flex-grow">
+                                An enterprise-grade Flask application for a hospital's pulmonology department, featuring role-based access, ML-powered COPD risk prediction, and an integrated Gemini AI clinical assistant.
+                            </p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <ul class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Flask</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Python</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">SQLAlchemy</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Scikit-learn</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Gemini API</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">FHIR</li>
+                            </ul>
+                            <div class="flex items-center gap-4 mt-4 text-slate-400">
+                                <a href="#" class="hover:text-cyan-400 transition-colors" aria-label="GitHub Link"><svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><title>GitHub</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 -->
+                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('#', '_blank')">
+                    <div class="relative overflow-hidden">
+                        <img src="https://placehold.co/600x360/111827/64ffda?text=Radiology+Design" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" alt="Radiology Department Design Project">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div>
+                            <p class="highlight font-mono text-sm">Academic Project</p>
+                            <h3 class="text-xl font-bold text-slate-100 mt-2 mb-3 group-hover:text-cyan-400 transition-colors">
+                                Radiological Dept. Planning & Design
+                            </h3>
+                            <p class="text-sm flex-grow">
+                                A comprehensive theoretical project on planning a modern radiological department, covering infrastructure, imaging modalities, and workflow optimization.
+                            </p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <ul class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Healthcare Planning</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">RIS/PACS</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Workflow Optimization</li>
+                            </ul>
+                            <div class="flex items-center gap-4 mt-4 text-slate-400">
+                                <a href="#" class="hover:text-cyan-400 transition-colors" aria-label="GitHub Link"><svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><title>GitHub</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-24 lg:py-32 reveal">
+            <h2 class="text-3xl font-bold mb-12 flex items-center text-slate-200">
+                <span class="highlight mr-4 text-2xl">04.</span> My Technical Skills
+                <span class="h-px bg-slate-600 flex-grow ml-6"></span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Category 1: AI & ML -->
+                <div class="glass-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold text-slate-100 mb-6 highlight">AI & Machine Learning</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                            <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <title>Python</title>
+                                <path fill="#3776AB" d="M12.012 24l-3.23-7.268-7.282-3.22 17.52-7.008L12.013 24z"/>
+                                <path fill="#FFD43B" d="M11.988 0l3.23 7.268 7.282 3.22-17.52 7.008L11.987 0z"/>
+                            </svg>
+                            <span class="text-slate-300">Python</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                           <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>scikit-learn</title><path fill="#F7931E" d="M11.104 20.347l-6.07-3.483-3.035-1.742a1.71 1.71 0 01-.854-1.479v-7.05a1.71 1.71 0 01.854-1.479l9.104-5.228a1.71 1.71 0 011.708 0l9.104 5.228a1.71 1.71 0 01.854 1.48v7.05a1.71 1.71 0 01-.854 1.479l-9.104 5.228a1.71 1.71 0 01-1.708 0zM8.07 10.749a3.818 3.818 0 100-7.636 3.818 3.818 0 000 7.636zm7.86-2.545a3.818 3.818 0 100-7.636 3.818 3.818 0 000 7.636z"/></svg>
+                            <span class="text-slate-300">Scikit-learn</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                             <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>TensorFlow</title><path fill="#FF6F00" d="M12.003 12.003h-2.14v2.14h-2.14v-2.14h-2.14v-2.14h2.14v-2.14h2.14v2.14h2.14v2.14zm-4.28 7.373L3.38 15.033V8.97l4.343-4.343 6.06 6.06-4.28 4.28-1.78-1.78v-4.284h-2.14v4.284L3.38 21.516l6.143 1.258 4.281-4.28-1.78-1.78zm10.793-2.093l-4.34-4.343-1.78 1.78 4.28 4.28-6.06 6.06 8.523-8.523-2.14-2.14zm-2.14-4.32l1.78-1.78-4.28-4.28-6.143-1.258L1.226 8.97l4.28 4.28 1.78-1.78V7.186h2.14v4.284l4.28-4.28z"/></svg>
+                            <span class="text-slate-300">TensorFlow</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                             <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Keras</title><path fill="#D00000" d="M24 0H0v24h24V0zM8.45 5.16l.2.12 4.92 2.9-.12.2-4.8 8.32-.2.32-3.4-1.96-.2-.12 3.2-5.56-4.76-2.76-.2-.12L8.45 5.16zm5.7 3.28l4.52-2.6-.2-.32L13.15 14l-.2.32-3.42-1.98-.2-.12 4.84-8.38z"/></svg>
+                            <span class="text-slate-300">Keras</span>
+                        </div>
+                         <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                           <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Pandas</title><path fill="#130654" d="M20.343 2.002H12v2.853h-1.713v14.284h1.713v2.859h8.343v-2.859h1.714V4.855h-1.714V2.002zm-1.714 17.143a1.43 1.43 0 1 1 0-2.858 1.43 1.43 0 0 1 0 2.858zm0-5.714a1.43 1.43 0 1 1 0-2.857 1.43 1.43 0 0 1 0 2.857zm0-5.715a1.43 1.43 0 1 1 0-2.857 1.43 1.43 0 0 1 0 2.857zM3.657 2.002h8.343v2.853H3.657V2.002zm0 17.14v2.859h8.343v-2.858H3.657zm0-2.858h1.714V4.855H3.657v11.428zm3.429-1.428a1.43 1.43 0 1 1-2.858 0 1.43 1.43 0 0 1 2.858 0zm0-5.715a1.43 1.43 0 1 1-2.858 0 1.43 1.43 0 0 1 2.858 0zM5.372 6.28a1.43 1.43 0 1 1 0 2.857 1.43 1.43 0 0 1 0-2.857z"/></svg>
+                            <span class="text-slate-300">Pandas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2: Health Informatics -->
+                <div class="glass-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold text-slate-100 mb-6 highlight">Health Informatics</h3>
+                    <div class="flex flex-wrap gap-4">
+                         <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                           <span class="highlight font-bold">HL7/FHIR</span>
+                        </div>
+                         <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                           <span class="highlight font-bold">DICOM</span>
+                        </div>
+                         <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                            <span class="highlight font-bold">RIS/PACS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3: Core Technologies -->
+                <div class="glass-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold text-slate-100 mb-6 highlight">Core Technologies</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                           <span class="highlight font-bold">Data Viz</span>
+                        </div>
+                         <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                            <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>HTML5</title><path fill="#E34F26" d="m1.854 0 1.935 21.92L12 24l8.21-2.08L22.146 0H1.854zM18.44 7.632H8.34l.323 3.623h9.453l-.645 7.23-4.225 1.125h-.002l-4.225-1.125-.26-2.91h3.2l.144 1.635 1.14.305h.002l1.14-.305.12-1.35H6.626l-.966-10.836h12.78z"/></svg>
+                            <span class="text-slate-300">HTML5</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                            <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>CSS3</title><path fill="#1572B6" d="m1.854 0 1.935 21.92L12 24l8.21-2.08L22.146 0H1.854zM17.163 15.21l-.42 4.707-4.743 1.29V18.8l2.19-.59.213-2.378H9.36l-.21-2.36h7.743l.27-3.033H6.08l-.21-2.358h11.563l.27-3.032H3.197l-.324-3.622h18.25l-.96 10.74z"/></svg>
+                            <span class="text-slate-300">CSS3</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
+                            <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>SQLite</title><path fill="#003B57" d="M12 0C8.42.022 5.093 1.624 2.76 4.312V19.69c2.333 2.687 5.66 4.29 9.24 4.312 3.58-.022 6.907-1.625 9.24-4.313V4.312C18.907 1.625 15.58.022 12 0zm-.39 2.69c.11.002.22.002.33 0h.12c2.47.01 4.82.95 6.6 2.62l-4.59 4.59V2.81c-.78-.07-1.57-.11-2.37-.12a14.16 14.16 0 0 0-.09 0zm-1.89 1.12c-.03.8-.05 1.6-.05 2.41v6.17L3.9 6.62c1.78-1.67 4.13-2.61 6.6-2.62h.22zM2.69 11.61v.78c.002.11.002.22 0 .33v.12c.01 2.47.95 4.82 2.62 6.6l4.59-4.59H2.81c-.07-.78-.11-1.57-.12-2.37a14.2 14.2 0 0 1 0-.09zm1.12 1.89c.8.03 1.6.05 2.41.05h6.17l-5.77 5.77c-1.67-1.78-2.61-4.13-2.62-6.6v-.22zM12 21.31c-.11-.002-.22-.002-.33 0h-.12c-2.47-.01-4.82-.95-6.6-2.62l4.59-4.59v7.09c.78.07 1.57.11 2.37.12.03 0 .06 0 .09 0zm1.89-1.12c.03-.8.05-1.6.05-2.41v-6.17l5.77 5.77c-1.78 1.67-4.13 2.61-6.6-2.62h-.22zm7.42-7.58v-.78c-.002-.11-.002-.22 0-.33v-.12c-.01-2.47-.95-4.82-2.62-6.6l-4.59 4.59h7.09c.07.78.11 1.57.12 2.37a14.16 14.16 0 0 1 0 .09zm-1.12-1.89c-.8-.03-1.6-.05-2.41-.05h-6.17l5.77-5.77c1.67 1.78 2.61 4.13 2.62 6.6v.22z"/></svg>
+                            <span class="text-slate-300">SQLite</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 lg:py-32 text-center max-w-xl mx-auto reveal">
+             <h2 class="text-2xl font-bold mb-4 flex-col items-center">
+                <span class="highlight mr-2 text-xl font-mono block mb-2">What's Next?</span>
+                <span class="text-4xl text-slate-100 block">Get In Touch</span>
+            </h2>
+            <p class="mb-8">I'm actively seeking opportunities to apply my skills to challenging problems in health informatics. Whether you have a question, a project idea, or just want to connect, my inbox is always open. I'll do my best to get back to you!</p>
+            <a href="mailto:shubhamkatore712@gmail.com" class="cta-link border border-current text-cyan-400 font-mono py-4 px-8 rounded hover:bg-current/10 transition-colors duration-300">
+                Say Hello
+            </a>
+        </section>
+    </main>
+
+    <footer class="max-w-6xl mx-auto px-6 md:px-8 text-center py-6 text-sm text-slate-400 font-mono">
+        <div>Designed & Built by Shubham Katore</div>
+        <div class="mt-2">© 2025 Shubham Katore. All Rights Reserved.</div>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // Mobile Menu
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Sticky Nav on scroll - REMOVED TO MAKE NAVBAR PERMANENTLY FIXED
+
+        // Reveal on scroll
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+        window.addEventListener('scroll', reveal);
+        reveal(); // Initial check
+
+        // About Me Tabs
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const tabId = button.getAttribute('data-tab');
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        // Three.js 3D Atom Animation
+        let scene, camera, renderer, atom;
+
+        function init() {
+            const canvas = document.getElementById('hero-canvas');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            createAtom();
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+        
+        function createAtom() {
+            if(atom) scene.remove(atom);
+            
+            atom = new THREE.Group();
+            
+            const colors = { nucleus: 0x64ffda, orbit: 0x64ffda, electron: 0x8892b0 };
+
+            // Nucleus
+            const nucleusGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+            const nucleusMaterial = new THREE.MeshPhongMaterial({ color: colors.nucleus, shininess: 100 });
+            const nucleus = new THREE.Mesh(nucleusGeometry, nucleusMaterial);
+            atom.add(nucleus);
+
+            // Electrons and Orbits
+            const electronMaterial = new THREE.MeshPhongMaterial({ color: colors.electron });
+            const orbitMaterial = new THREE.LineBasicMaterial({ color: colors.orbit, transparent: true, opacity: 0.3 });
+
+            for (let i = 0; i < 3; i++) {
+                const orbit = new THREE.Group();
+                const orbitPath = new THREE.EllipseCurve(0, 0, 2 + i * 0.7, 2 + i * 0.7, 0, 2 * Math.PI, false, 0);
+                const points = orbitPath.getPoints(128);
+                const geometryPoints = new THREE.BufferGeometry().setFromPoints(points);
+                const ellipse = new THREE.Line(geometryPoints, orbitMaterial);
+                orbit.add(ellipse);
+
+                const electronGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+                const electron = new THREE.Mesh(electronGeometry, electronMaterial);
+                electron.position.x = 2 + i * 0.7;
+                orbit.add(electron);
+                
+                orbit.rotation.x = Math.random() * Math.PI;
+                orbit.rotation.y = Math.random() * Math.PI;
+                orbit.rotation.z = Math.random() * Math.PI;
+                
+                atom.add(orbit);
+            }
+            scene.add(atom);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            atom.rotation.y += 0.002;
+            atom.children.forEach((child, index) => {
+                if (index > 0) { // skip nucleus
+                    child.rotation.z += 0.005 * (index + 1) * 0.5;
+                }
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
