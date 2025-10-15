@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shubham Katore | Health Informatics & Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0A192F; /* Darker navy background */
+            background-color: #0A192F;
             color: #8892b0;
             overflow-x: hidden;
         }
@@ -37,7 +38,7 @@
             color: #64ffda;
             background-color: transparent;
             border-radius: 4px;
-            padding: 0.75rem 1.5rem; /* Increased padding */
+            padding: 0.75rem 1.5rem;
             font-family: 'Roboto Mono', monospace;
             font-size: 14px;
             transition: all 0.25s ease;
@@ -63,6 +64,21 @@
             height: 100%;
             z-index: -1;
         }
+
+        #character-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 180px;
+            height: 180px;
+            z-index: 100;
+            cursor: grab;
+        }
+         #character-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            touch-action: none; /* Prevents scrolling on mobile when dragging */
+         }
         
         /* Side Elements */
         .side-element {
@@ -91,12 +107,33 @@
             margin: 20px auto 0;
             background-color: #a8b2d1;
         }
+        
+        /* New Mobile Close Button Style */
+        #mobile-menu-close-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        #mobile-menu-close-button:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+            transform: scale(1.1) rotate(90deg);
+        }
 
         @media (max-width: 1080px) {
             .side-element.left { left: 20px; }
         }
         @media (max-width: 768px) {
             .side-element { display: none; }
+            #character-container {
+                width: 130px;
+                height: 130px;
+                bottom: 10px;
+                right: 10px;
+            }
         }
 
         @keyframes glowAnimation {
@@ -111,7 +148,6 @@
         .animate-glow {
             animation: glowAnimation 4s ease-in-out infinite;
         }
-
     </style>
 </head>
 <body class="leading-relaxed">
@@ -146,8 +182,8 @@
          </div>
          <!-- Mobile Menu -->
          <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-screen bg-[#111827] flex flex-col items-center justify-center space-y-8 text-xl">
-             <button id="mobile-menu-close-button" class="absolute top-8 right-6 text-slate-300 hover:text-cyan-400">
-                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+             <button id="mobile-menu-close-button" class="absolute top-6 right-6 text-slate-300 hover:text-cyan-400">
+                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
              </button>
              <a href="#about" class="mobile-link text-slate-300">About</a>
              <a href="#experience" class="mobile-link text-slate-300">Experience</a>
@@ -162,9 +198,9 @@
         <div class="relative z-10 max-w-6xl w-full px-6 md:px-8 text-center md:text-left">
             <div class="max-w-3xl">
                 <p class="font-mono mb-4 text-cyan-400">Hi, my name is</p>
-                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-100 mb-4 leading-tight">Shubham Katore.</h1>
-                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-400 mb-8">I build solutions at the intersection of health and technology.</h2>
-                <p class="max-w-xl mx-auto md:mx-0 text-slate-400 text-base">
+                <h1 id="user-name" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-100 mb-4 leading-tight">Shubham Katore.</h1>
+                <h2 id="user-title" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-slate-400 mb-8">I build solutions at the intersection of health and technology.</h2>
+                <p id="user-summary" class="max-w-xl mx-auto md:mx-0 text-slate-400 text-base">
                     I'm a passionate healthcare technologist with a background in Medical Imaging, currently pursuing an MSc in Health Informatics. I specialize in applying data analytics and machine learning to solve real-world problems in clinical diagnostics and healthcare operations.
                 </p>
                 <div class="mt-12 flex flex-col items-center text-center md:items-start">
@@ -242,15 +278,15 @@
             </div>
         </section>
 
-         <!-- Projects Section -->
+        <!-- Projects Section -->
         <section id="projects" class="py-20 sm:py-24 md:py-28 reveal">
             <h2 class="text-2xl sm:text-3xl font-bold mb-12 flex items-center text-slate-200">
                 <span class="highlight mr-4 text-xl sm:text-2xl">03.</span> Things I've Built
                 <span class="h-px bg-slate-600 flex-grow ml-6"></span>
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Project Card 1 -->
-                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('#', '_blank')">
+                <!-- Project Card 1: Pulmonology EMR -->
+                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('https://pulmonology-app-2.onrender.com/', '_blank')">
                     <div class="relative overflow-hidden">
                         <img src="https://placehold.co/600x360/111827/64ffda?text=Pulmonology+EMR" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" alt="Pulmonology EMR Screenshot">
                     </div>
@@ -280,26 +316,84 @@
                     </div>
                 </div>
 
-                <!-- Project Card 2 -->
-                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('#', '_blank')">
+                <!-- Project Card 2: Medical Insurance Prediction -->
+                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('https://medical-insurance-cost-prediction-model.streamlit.app/', '_blank')">
                     <div class="relative overflow-hidden">
-                        <img src="https://placehold.co/600x360/111827/64ffda?text=Radiology+Design" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" alt="Radiology Department Design Project">
+                        <img src="https://placehold.co/600x360/111827/64ffda?text=Insurance+Prediction" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" alt="Medical Insurance Cost Prediction Screenshot">
                     </div>
                     <div class="p-6 flex flex-col flex-grow">
                         <div>
-                            <p class="highlight font-mono text-sm">Academic Project</p>
+                            <p class="highlight font-mono text-sm">Machine Learning App</p>
                             <h3 class="text-xl font-bold text-slate-100 mt-2 mb-3 group-hover:text-cyan-400 transition-colors">
-                                Radiological Dept. Planning & Design
+                                Medical Insurance Cost Prediction
                             </h3>
                             <p class="text-sm flex-grow">
-                                A comprehensive theoretical project on planning a modern radiological department, covering infrastructure, imaging modalities, and workflow optimization.
+                                A web application that leverages machine learning to predict medical insurance costs based on user inputs, aiding in financial planning.
                             </p>
                         </div>
                         <div class="mt-auto pt-4">
                             <ul class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
-                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Healthcare Planning</li>
-                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">RIS/PACS</li>
-                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Workflow Optimization</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Streamlit</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Python</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Scikit-learn</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Pandas</li>
+                            </ul>
+                            <div class="flex items-center gap-4 mt-4 text-slate-400">
+                                <a href="#" class="hover:text-cyan-400 transition-colors" aria-label="GitHub Link"><svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><title>GitHub</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Card 3: AI Radiology Health -->
+                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('https://ai-radiology-health.streamlit.app/', '_blank')">
+                    <div class="relative overflow-hidden">
+                        <img src="https://placehold.co/600x360/111827/64ffda?text=AI+Radiology" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" alt="AI Radiology Health Screenshot">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div>
+                            <p class="highlight font-mono text-sm">Deep Learning App</p>
+                            <h3 class="text-xl font-bold text-slate-100 mt-2 mb-3 group-hover:text-cyan-400 transition-colors">
+                                AI-Powered Radiology Assistant
+                            </h3>
+                            <p class="text-sm flex-grow">
+                                An intelligent system that assists radiologists by analyzing chest X-rays to detect pneumonia, utilizing a deep learning model for high accuracy.
+                            </p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <ul class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Streamlit</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Python</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">TensorFlow</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Keras</li>
+                            </ul>
+                            <div class="flex items-center gap-4 mt-4 text-slate-400">
+                                <a href="#" class="hover:text-cyan-400 transition-colors" aria-label="GitHub Link"><svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><title>GitHub</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Card 4: GemChat Pro -->
+                <div class="glass-card rounded-lg overflow-hidden flex flex-col group cursor-pointer" onclick="window.open('https://gemchat-pro.streamlit.app/', '_blank')">
+                    <div class="relative overflow-hidden">
+                        <img src="https://placehold.co/600x360/111827/64ffda?text=GemChat+Pro" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" alt="GemChat Pro Screenshot">
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <div>
+                            <p class="highlight font-mono text-sm">Generative AI App</p>
+                            <h3 class="text-xl font-bold text-slate-100 mt-2 mb-3 group-hover:text-cyan-400 transition-colors">
+                                GemChat Pro
+                            </h3>
+                            <p class="text-sm flex-grow">
+                                A versatile, multi-modal chatbot powered by the Gemini Pro and Vision APIs, capable of engaging in text-based conversations and analyzing images.
+                            </p>
+                        </div>
+                        <div class="mt-auto pt-4">
+                            <ul class="flex flex-wrap gap-2 text-xs font-mono text-slate-400">
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Streamlit</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Python</li>
+                                <li class="bg-cyan-900/50 text-cyan-300 px-3 py-1 rounded-full">Gemini API</li>
                             </ul>
                             <div class="flex items-center gap-4 mt-4 text-slate-400">
                                 <a href="#" class="hover:text-cyan-400 transition-colors" aria-label="GitHub Link"><svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><title>GitHub</title><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
@@ -309,6 +403,7 @@
                 </div>
             </div>
         </section>
+
 
         <!-- Skills Section -->
         <section id="skills" class="py-20 sm:py-24 md:py-28 reveal">
@@ -334,11 +429,11 @@
                             <span class="text-slate-300">Scikit-learn</span>
                         </div>
                         <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
-                              <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>TensorFlow</title><path fill="#FF6F00" d="M12.003 12.003h-2.14v2.14h-2.14v-2.14h-2.14v-2.14h2.14v-2.14h2.14v2.14h2.14v2.14zm-4.28 7.373L3.38 15.033V8.97l4.343-4.343 6.06 6.06-4.28 4.28-1.78-1.78v-4.284h-2.14v4.284L3.38 21.516l6.143 1.258 4.281-4.28-1.78-1.78zm10.793-2.093l-4.34-4.343-1.78 1.78 4.28 4.28-6.06 6.06 8.523-8.523-2.14-2.14zm-2.14-4.32l1.78-1.78-4.28-4.28-6.143-1.258L1.226 8.97l4.28 4.28 1.78-1.78V7.186h2.14v4.284l4.28-4.28z"/></svg>
+                                <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>TensorFlow</title><path fill="#FF6F00" d="M12.003 12.003h-2.14v2.14h-2.14v-2.14h-2.14v-2.14h2.14v-2.14h2.14v2.14h2.14v2.14zm-4.28 7.373L3.38 15.033V8.97l4.343-4.343 6.06 6.06-4.28 4.28-1.78-1.78v-4.284h-2.14v4.284L3.38 21.516l6.143 1.258 4.281-4.28-1.78-1.78zm10.793-2.093l-4.34-4.343-1.78 1.78 4.28 4.28-6.06 6.06 8.523-8.523-2.14-2.14zm-2.14-4.32l1.78-1.78-4.28-4.28-6.143-1.258L1.226 8.97l4.28 4.28 1.78-1.78V7.186h2.14v4.284l4.28-4.28z"/></svg>
                             <span class="text-slate-300">TensorFlow</span>
                         </div>
                         <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
-                              <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Keras</title><path fill="#D00000" d="M24 0H0v24h24V0zM8.45 5.16l.2.12 4.92 2.9-.12.2-4.8 8.32-.2.32-3.4-1.96-.2-.12 3.2-5.56-4.76-2.76-.2-.12L8.45 5.16zm5.7 3.28l4.52-2.6-.2-.32L13.15 14l-.2.32-3.42-1.98-.2-.12 4.84-8.38z"/></svg>
+                                <svg class="w-6 h-6" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Keras</title><path fill="#D00000" d="M24 0H0v24h24V0zM8.45 5.16l.2.12 4.92 2.9-.12.2-4.8 8.32-.2.32-3.4-1.96-.2-.12 3.2-5.56-4.76-2.76-.2-.12L8.45 5.16zm5.7 3.28l4.52-2.6-.2-.32L13.15 14l-.2.32-3.42-1.98-.2-.12 4.84-8.38z"/></svg>
                             <span class="text-slate-300">Keras</span>
                         </div>
                          <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
@@ -359,7 +454,7 @@
                             <span class="highlight font-bold">DICOM</span>
                         </div>
                          <div class="flex items-center gap-3 bg-slate-800/50 rounded-lg px-3 py-2">
-                             <span class="highlight font-bold">RIS/PACS</span>
+                                <span class="highlight font-bold">RIS/PACS</span>
                         </div>
                     </div>
                 </div>
@@ -392,13 +487,13 @@
         <!-- Contact Section -->
         <section id="contact" class="py-20 sm:py-24 md:py-28 text-center max-w-xl mx-auto reveal">
               <h2 class="text-2xl sm:text-3xl font-bold mb-4 flex-col items-center">
-                 <span class="highlight mr-2 text-xl sm:text-2xl font-mono block mb-2">What's Next?</span>
-                 <span class="text-4xl text-slate-100 block">Get In Touch</span>
-             </h2>
-             <p class="mb-8 text-sm sm:text-base">I'm actively seeking opportunities to apply my skills to challenging problems in health informatics. Whether you have a question, a project idea, or just want to connect, my inbox is always open. I'll do my best to get back to you!</p>
-             <a href="mailto:shubhamkatore712@gmail.com" class="cta-link border border-current text-cyan-400 font-mono py-4 px-8 rounded hover:bg-current/10 transition-colors duration-300">
-                 Say Hello
-             </a>
+                   <span class="highlight mr-2 text-xl sm:text-2xl font-mono block mb-2">What's Next?</span>
+                   <span class="text-4xl text-slate-100 block">Get In Touch</span>
+              </h2>
+              <p class="mb-8 text-sm sm:text-base">I'm actively seeking opportunities to apply my skills to challenging problems in health informatics. Whether you have a question, a project idea, or just want to connect, my inbox is always open. I'll do my best to get back to you!</p>
+              <a href="mailto:shubhamkatore712@gmail.com" class="cta-link border border-current text-cyan-400 font-mono py-4 px-8 rounded hover:bg-current/10 transition-colors duration-300">
+                   Say Hello
+              </a>
         </section>
     </main>
 
@@ -407,144 +502,447 @@
         <div class="mt-2">© 2025 Shubham Katore. All Rights Reserved.</div>
     </footer>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- 3D Assistant Canvas Container -->
+    <div id="character-container"></div>
 
-    <script>
+    <script type="module">
+        // --- Main Application Logic ---
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
+
         // --- Three.js Background Animation ---
         let scene, camera, renderer, stars, starGeo;
 
-        function init() {
+        function initPortfolioAnimation() {
             const canvas = document.getElementById('bg-canvas');
             scene = new THREE.Scene();
-
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
             camera.position.z = 1;
             camera.rotation.x = Math.PI / 2;
-
-            renderer = new THREE.WebGLRenderer({ canvas: canvas });
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas') });
             renderer.setSize(window.innerWidth, window.innerHeight);
-
             starGeo = new THREE.BufferGeometry();
             const starCount = 6000;
             const positions = new Float32Array(starCount * 3);
-            const velocities = new Float32Array(starCount);
-            const accelerations = new Float32Array(starCount);
-
             for (let i = 0; i < starCount; i++) {
                 positions[i * 3] = Math.random() * 600 - 300;
                 positions[i * 3 + 1] = Math.random() * 600 - 300;
                 positions[i * 3 + 2] = Math.random() * 600 - 300;
-                velocities[i] = 0;
-                accelerations[i] = 0.02;
             }
-
             starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            starGeo.setAttribute('velocity', new THREE.BufferAttribute(velocities, 1));
-            starGeo.setAttribute('acceleration', new THREE.BufferAttribute(accelerations, 1));
-            
             let sprite = new THREE.TextureLoader().load('https://placehold.co/16x16/64ffda/64ffda.png');
-            let starMaterial = new THREE.PointsMaterial({
-                color: 0x64ffda,
-                size: 0.7,
-                map: sprite,
-                transparent: true,
-                opacity: 0.8
-            });
-
+            let starMaterial = new THREE.PointsMaterial({ color: 0x64ffda, size: 0.7, map: sprite, transparent: true, opacity: 0.8 });
             stars = new THREE.Points(starGeo, starMaterial);
             scene.add(stars);
-
-            window.addEventListener("resize", onWindowResize, false);
-            animate();
+            window.addEventListener("resize", onPortfolioWindowResize, false);
+            animatePortfolio();
         }
 
-        function onWindowResize() {
+        function onPortfolioWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        function animate() {
+        function animatePortfolio() {
             const positions = starGeo.attributes.position.array;
-            const velocities = starGeo.attributes.velocity.array;
-            
             for (let i = 0; i < positions.length / 3; i++) {
-                velocities[i] += starGeo.attributes.acceleration.array[i];
-                positions[i * 3 + 1] -= velocities[i];
+                positions[i * 3 + 1] -= 0.2;
                 if (positions[i * 3 + 1] < -200) {
                     positions[i * 3 + 1] = 200;
-                    velocities[i] = 0;
                 }
             }
-
             starGeo.attributes.position.needsUpdate = true;
-            stars.rotation.y += 0.002;
-
+            stars.rotation.y += 0.0002;
             renderer.render(scene, camera);
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animatePortfolio);
         }
 
-        init();
         
-        // Mobile Menu
+        // --- Portfolio UI Logic ---
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileLinks = document.querySelectorAll('.mobile-link');
         const mobileMenuCloseButton = document.getElementById('mobile-menu-close-button');
-        
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.remove('hidden');
-        });
-        
-        mobileMenuCloseButton.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-        });
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.remove('hidden'));
+        mobileMenuCloseButton.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        mobileLinks.forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
 
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-
-        // Reveal on scroll
         function reveal() {
             const reveals = document.querySelectorAll('.reveal');
-            for (let i = 0; i < reveals.length; i++) {
-                const windowHeight = window.innerHeight;
-                const elementTop = reveals[i].getBoundingClientRect().top;
-                const elementVisible = 100;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveals[i].classList.add('active');
+            reveals.forEach(reveal => {
+                if (reveal.getBoundingClientRect().top < window.innerHeight - 100) {
+                    reveal.classList.add('active');
                 }
-            }
+            });
         }
         window.addEventListener('scroll', reveal);
-        reveal(); // Initial check
+        
 
-        // About Me Tabs
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
-
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-
                 const tabId = button.getAttribute('data-tab');
                 tabContents.forEach(content => {
-                    content.classList.remove('active');
-                    if (content.id === tabId) {
-                        content.classList.add('active');
-                    }
+                    content.id === tabId ? content.classList.add('active') : content.classList.remove('active');
                 });
+            });
+        });
+
+        // --- 3D VOICE ASSISTANT (LOCAL SCRIPTED) ---
+        const characterContainer = document.getElementById('character-container');
+        let assistantScene, assistantCamera, assistantRenderer, character, listeningGlow;
+        let recognition;
+        let isAudioInitialized = false;
+        let assistantState = 'IDLE'; // IDLE, LISTENING, PROCESSING, SPEAKING
+        let conversationTimeout;
+        let femaleVoice;
+        const mouse = new THREE.Vector2();
+
+        const STATE_COLORS = {
+            LISTENING: new THREE.Color(0x64ffda),
+            PROCESSING: new THREE.Color(0xffd700),
+            SPEAKING: new THREE.Color(0x60a5fa),
+        };
+        let targetColor = new THREE.Color(0x64ffda);
+
+        function setAssistantState(newState) {
+            if (assistantState === newState) return;
+            assistantState = newState;
+
+            clearTimeout(conversationTimeout);
+
+            switch (newState) {
+                case 'IDLE':
+                    window.speechSynthesis.cancel();
+                    targetColor.set(STATE_COLORS.LISTENING);
+                    if (isAudioInitialized) startRecognition();
+                    break;
+                case 'LISTENING':
+                    conversationTimeout = setTimeout(() => {
+                        if (assistantState === 'LISTENING') setAssistantState('IDLE');
+                    }, 15000); // 15 seconds of inactivity
+                    targetColor.set(STATE_COLORS.LISTENING);
+                    startRecognition();
+                    break;
+                case 'PROCESSING':
+                    targetColor.set(STATE_COLORS.PROCESSING);
+                    stopRecognition();
+                    break;
+                case 'SPEAKING':
+                    targetColor.set(STATE_COLORS.SPEAKING);
+                    // Keep recognition running to listen for "stop"
+                    startRecognition(); 
+                    break;
+            }
+        }
+
+        function initAssistant3D() {
+            assistantScene = new THREE.Scene();
+            assistantCamera = new THREE.PerspectiveCamera(75, characterContainer.clientWidth / characterContainer.clientHeight, 0.1, 1000);
+            assistantRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            assistantRenderer.setSize(characterContainer.clientWidth, characterContainer.clientHeight);
+            assistantRenderer.setClearColor(0x000000, 0);
+            characterContainer.appendChild(assistantRenderer.domElement);
+            
+            // Responsive Camera
+            if (window.innerWidth < 768) {
+                assistantCamera.position.z = 4.2; // Zoom in on smaller screens
+            } else {
+                assistantCamera.position.z = 3.5;
+            }
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            assistantScene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 10, 7.5);
+            assistantScene.add(directionalLight);
+            character = new THREE.Group();
+            assistantScene.add(character);
+            const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x60a5fa, roughness: 0.4, metalness: 0.1 });
+            const body = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), bodyMaterial);
+            body.scale.set(0.8, 1.25, 0.8);
+            character.add(body);
+            
+            const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const pupilMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            const noseMaterial = new THREE.MeshStandardMaterial({ color: 0x4a7ee1, roughness: 0.6 });
+            const mouthMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+            const eyeGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+            const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+            leftEye.position.set(-0.35, 0.25, 0.7);
+            character.add(leftEye);
+            const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+            rightEye.position.set(0.35, 0.25, 0.7);
+            character.add(rightEye);
+            const pupilGeometry = new THREE.SphereGeometry(0.07, 12, 12);
+            const leftPupil = new THREE.Mesh(pupilGeometry, pupilMaterial);
+            leftPupil.position.set(-0.35, 0.25, 0.82);
+            character.add(leftPupil);
+            const rightPupil = new THREE.Mesh(pupilGeometry, pupilMaterial);
+            rightPupil.position.set(0.35, 0.25, 0.82);
+            character.add(rightPupil);
+            const noseGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+            const nose = new THREE.Mesh(noseGeometry, noseMaterial);
+            nose.position.set(0, 0.05, 0.85);
+            character.add(nose);
+            const mouthGeometry = new THREE.TorusGeometry(0.2, 0.02, 8, 12, Math.PI);
+            const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+            mouth.position.set(0, -0.2, 0.8);
+            mouth.rotation.z = Math.PI;
+            character.add(mouth);
+
+            const glowMaterial = new THREE.MeshBasicMaterial({ color: 0x64ffda, transparent: true, opacity: 0, side: THREE.BackSide });
+            listeningGlow = new THREE.Mesh(new THREE.SphereGeometry(1.6, 32, 32), glowMaterial);
+            character.add(listeningGlow);
+
+            window.addEventListener('mousemove', onMouseMove, false);
+            window.addEventListener('resize', onAssistantWindowResize, false);
+            animateAssistant();
+        }
+        
+        function onAssistantWindowResize() {
+            const width = characterContainer.clientWidth;
+            const height = characterContainer.clientHeight;
+            assistantCamera.aspect = width / height;
+            // Adjust camera zoom on resize
+            if (window.innerWidth < 768) {
+                assistantCamera.position.z = 4.2;
+            } else {
+                assistantCamera.position.z = 3.5;
+            }
+            assistantCamera.updateProjectionMatrix();
+            assistantRenderer.setSize(width, height);
+        }
+
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+        
+        function animateAssistant() {
+            requestAnimationFrame(animateAssistant);
+            const time = Date.now() * 0.001;
+            character.rotation.y = THREE.MathUtils.lerp(character.rotation.y, mouse.x * 0.5, 0.05);
+            character.rotation.x = THREE.MathUtils.lerp(character.rotation.x, -mouse.y * 0.2, 0.05);
+            if (assistantState !== 'PROCESSING') {
+                character.position.y = Math.sin(time * 2) * 0.1;
+            }
+            if(listeningGlow){
+                listeningGlow.material.color.lerp(targetColor, 0.1);
+                listeningGlow.material.opacity += ((assistantState !== 'IDLE' ? 0.5 : 0) - listeningGlow.material.opacity) * 0.1;
+            }
+            if (assistantState === 'SPEAKING' || assistantState === 'PROCESSING') {
+                const scale = 1 + Math.sin(time * (assistantState === 'SPEAKING' ? 10 : 5)) * 0.05;
+                character.scale.set(scale, scale, scale);
+            } else {
+                character.scale.lerp(new THREE.Vector3(1,1,1), 0.1);
+            }
+            assistantRenderer.render(assistantScene, assistantCamera);
+        }
+
+        async function speak(text) {
+            return new Promise((resolve) => {
+                setAssistantState('SPEAKING');
+                const utterance = new SpeechSynthesisUtterance(text);
+                if (femaleVoice) utterance.voice = femaleVoice;
+                utterance.onend = () => {
+                    if(assistantState === 'SPEAKING') setAssistantState('LISTENING');
+                    resolve();
+                };
+                utterance.onerror = (e) => {
+                    console.error("Speech synthesis error:", e);
+                    if(assistantState === 'SPEAKING') setAssistantState('LISTENING');
+                    resolve();
+                };
+                window.speechSynthesis.speak(utterance);
+            });
+        }
+
+        async function handleLocalCommand(text) {
+            setAssistantState('PROCESSING');
+            text = text.toLowerCase();
+            const readCommands = text.includes("read") || text.includes("tell me about") || text.includes("what's in") || text.includes("what is written in");
+
+            // --- Specific Questions (Highest Priority) ---
+            if (text.includes("your name")) {
+                const name = document.getElementById('user-name').innerText;
+                await speak(`This portfolio belongs to ${name}.`);
+            } else if (text.includes("what do you do") || text.includes("profession") || text.includes("job")) {
+                const title = document.getElementById('user-title').innerText;
+                await speak(title);
+            } else if (text.includes("studying") || text.includes("studies")) {
+                await speak("Shubham is currently pursuing an MSc in Health Informatics.");
+            } else if (text.includes("work experience")) {
+                const experienceTitle = document.querySelector('#experience h3').innerText;
+                const experienceLocation = document.querySelector('#experience p').innerText;
+                await speak(`Shubham worked as a ${experienceTitle} at ${experienceLocation}.`);
+            } else if (text.includes("tech stack") || (text.includes("technical") && text.includes("skill"))) {
+                 const skillTitles = Array.from(document.querySelectorAll('#skills h3')).map(h => h.innerText).join(', ');
+                 await speak(`The main skill categories are: ${skillTitles}. You can ask me to read the skills in any of these categories.`);
+            } else if (text.includes("contact")) {
+                 await speak("You can contact Shubham by clicking the 'Say Hello' button at the bottom of the page.");
+                 document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // --- Read Commands ---
+            else if (readCommands && text.includes("about")) {
+                 const content = document.getElementById('about-me').innerText;
+                 await speak(`Sure, reading the about section. ${content}`);
+            } else if (readCommands && text.includes("philosophy")) {
+                 const content = document.getElementById('philosophy').innerText;
+                 await speak(`Reading the philosophy section. ${content}`);
+            } else if (readCommands && text.includes("experience")) {
+                 const content = document.getElementById('experience').querySelector('.list-disc').innerText;
+                 await speak(`Reading the experience section. ${content}`);
+            } else if (readCommands && text.includes("project")) {
+                 const projectTitles = Array.from(document.querySelectorAll('#projects h3')).map(h => h.innerText).join(', and ');
+                 await speak(`Shubham has built the following projects: ${projectTitles}.`);
+            } else if (readCommands && (text.includes("ai") || text.includes("machine learning"))) {
+                const skills = Array.from(document.querySelectorAll('#skills .glass-card:nth-child(1) span')).map(s => s.innerText).join(', ');
+                await speak(`The AI and Machine Learning skills listed are: ${skills}`);
+            }
+            
+            // --- Social Links (Checked Before Navigation) ---
+            else if (text.includes("linkedin") || text.includes("linked in")) {
+                await speak("Opening the LinkedIn profile in a new tab.");
+                window.open('https://www.linkedin.com/in/shubham-katore-a80936279', '_blank');
+            } else if (text.includes("github") || text.includes("git hub") || text.includes("git")) {
+                await speak("Opening the GitHub profile in a new tab.");
+                window.open('https://github.com/shubham12-bit896', '_blank');
+            }
+
+            // --- Navigation Commands ---
+            else if (text.includes("about")) {
+                await speak("Navigating to the about section.");
+                document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+            } else if (text.includes("experience")) {
+                await speak("Showing you the experience section.");
+                document.getElementById('experience').scrollIntoView({ behavior: 'smooth' });
+            } else if (text.includes("project")) {
+                await speak("Here are the projects.");
+                document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+            } else if (text.includes("skill")) {
+                await speak("Checking out the skills section.");
+                document.getElementById('skills').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // --- Fun Mode & Utility ---
+            else if (text.includes("joke")) {
+                await speak("Why don't scientists trust atoms? Because they make up everything!");
+            } else if (text.includes("time")) {
+                const timeString = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                await speak(`The current time is ${timeString}`);
+            } else if (text.includes("date")) {
+                const dateString = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+                await speak(`Today is ${dateString}`);
+            } else if (text.includes("goodbye")) {
+                await speak("Goodbye!");
+                setAssistantState('IDLE');
+            } 
+            
+            // --- Fallback for unknown commands ---
+            else {
+                await speak("I can guide you through the portfolio. Try asking me something like, 'What is your tech stack?' or 'Go to projects'.");
+            }
+        }
+        
+        let isRecognitionRunning = false;
+        function startRecognition() {
+            if (recognition && !isRecognitionRunning) {
+                try { recognition.start(); } catch(e) { /* ignore */ }
+            }
+        }
+        function stopRecognition() {
+             if (recognition && isRecognitionRunning) {
+                try { recognition.stop(); } catch(e) { /* ignore */ }
+            }
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            const WAKE_WORD = "hey bot";
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                const interimTranscript = event.results[event.results.length-1][0].transcript.trim().toLowerCase();
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript;
+                }
+                
+                finalTranscript = finalTranscript.trim().toLowerCase();
+
+                if (finalTranscript.includes("stop") || finalTranscript.includes("cancel") || interimTranscript.includes("stop") || interimTranscript.includes("cancel")) {
+                    window.speechSynthesis.cancel();
+                    if(assistantState === 'SPEAKING') setAssistantState('LISTENING');
+                    return; 
+                }
+
+                if (!finalTranscript) return;
+
+                if (assistantState === 'IDLE' && finalTranscript.includes(WAKE_WORD)) {
+                    setAssistantState('LISTENING');
+                    speak("How can I help you?");
+                } else if (assistantState === 'LISTENING') {
+                    handleLocalCommand(finalTranscript);
+                }
+            };
+            
+            recognition.onstart = () => { isRecognitionRunning = true; };
+            recognition.onend = () => { 
+                isRecognitionRunning = false;
+                if (isAudioInitialized && assistantState !== 'PROCESSING') {
+                    setTimeout(() => startRecognition(), 250);
+                }
+            };
+            recognition.onerror = (event) => { isRecognitionRunning = false; };
+        }
+
+        function initializeAudio() {
+            if (isAudioInitialized) return;
+            isAudioInitialized = true;
+            console.log("Audio and recognition initialized.");
+            
+            speechSynthesis.onvoiceschanged = () => {
+                const voices = speechSynthesis.getVoices();
+                femaleVoice = voices.find(voice => voice.name.includes('Female') && voice.lang.startsWith('en')) || 
+                                voices.find(voice => voice.name.includes('Zira') && voice.lang.startsWith('en')) || 
+                                voices.find(voice => voice.name.includes('Samantha') && voice.lang.startsWith('en')) ||
+                                voices.find(voice => voice.lang.startsWith('en-GB') && !voice.name.includes('Male')) ||
+                                voices.find(voice => voice.lang.startsWith('en-US') && !voice.name.includes('Male'));
+                console.log("Selected voice:", femaleVoice ? femaleVoice.name : "Default");
+            };
+            speechSynthesis.getVoices();
+
+            startRecognition();
+        }
+        
+        // --- Main Initializer ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initPortfolioAnimation();
+            initAssistant3D();
+            
+            setTimeout(reveal, 100); 
+
+            document.body.addEventListener('click', initializeAudio, { once: true });
+            
+            characterContainer.addEventListener('click', () => {
+                if (!isAudioInitialized) {
+                    initializeAudio();
+                } else if (assistantState === 'IDLE') {
+                    setAssistantState('LISTENING');
+                    speak("How can I help you?");
+                }
             });
         });
         
     </script>
 </body>
 </html>
-
-
-
-
 
